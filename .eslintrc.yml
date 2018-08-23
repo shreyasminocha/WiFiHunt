@@ -17,3 +17,7 @@ rules:
     no-param-reassign: 0
     no-plusplus: 0
     arrow-body-style: 0
+    no-restricted-syntax: 0
+
+globals:
+    kontra: true
