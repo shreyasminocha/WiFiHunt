@@ -1,9 +1,17 @@
 body {
-    margin: 1em;
+    margin: 0 15%;
+    font-family: Helvetica;
+}
+
+h1 {
+    text-align: center;
 }
 
 canvas {
-    margin: 0 auto;
-    width: 100%;
-    max-height: 1000px;
+    background: silver;
+}
+
+footer {
+    text-align: center;
+    margin-top: 1em;
 }
