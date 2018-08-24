@@ -81,8 +81,11 @@ window.onload = () => {
     kontra.keys.bind(['up', 'w'], () => {
         debug(toRadians(angleOfRotation));
 
-        currentPosition.x += getXComponent(angleOfRotation, 1);
-        currentPosition.y += getYComponent(angleOfRotation, 1);
+        const [xComponent, yComponent] = polarToCartesian(angleOfRotation, 1);
+
+        currentPosition.x += xComponent;
+        currentPosition.y += yComponent;
+
         debug(`(${currentPosition.x}, ${currentPosition.y})`);
     });
 
@@ -123,18 +126,17 @@ function getAccessPoints(point) {
     });
 }
 
-function toFixed(number, precision) {
-    return Math.round(number * (10 ** precision)) / (10 ** precision);
+function polarToCartesian(angle, radius) {
+    const inRadians = toRadians(angle);
+    const ratios = [Math.cos(inRadians), Math.sin(inRadians)];
+
+    return ratios.map(ratio => toFixed(radius * ratio, 4));
 }
 
 function toRadians(angle) {
     return toFixed(angle * (Math.PI / 180), 4);
 }
 
-function getXComponent(angle, radius) {
-    return toFixed(radius * Math.cos(toRadians(angle)), 4);
-}
-
-function getYComponent(angle, radius) {
-    return toFixed(radius * Math.sin(toRadians(angle)), 4);
+function toFixed(number, precision) {
+    return Math.round(number * (10 ** precision)) / (10 ** precision);
 }
