@@ -25,6 +25,8 @@ const paths = {
             'src/js/lib/polarToCartesian.js',
             'src/js/lib/point.js',
             'src/js/lib/accessPoint.js',
+            'src/js/lib/accessPoints.js',
+            'src/js/lib/achievements.js',
             'src/js/script.js'
         ],
         images: 'src/images/**'

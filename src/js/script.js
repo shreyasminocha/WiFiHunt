@@ -15,35 +15,6 @@ const goal = {
     }
 };
 
-const achievements = [
-    { name: '1337 hax0r', description: 'Bruteforce a WiFi network' },
-    { name: 'Step out into the sun', description: 'Leave the confines of your room' },
-    { name: 'Clever guesser', description: 'Correctly guess a WiFi network\'s  password' },
-    { name: 'Overcoming social anxiety', description: 'Ask for a WiFi password' },
-    { name: 'Freeloader', description: 'Connect to a freemium WiFi' },
-    { name: 'My own damn internet', description: 'Use mobile network' },
-    { name: 'Puzzle solver', description: 'Solve a puzzle and attain a WiFi password' },
-    { name: '$$$', description: 'Pay for WiFi' },
-    { name: 'Broke', description: 'Run out of cash' },
-];
-
-const accessPoints = [
-    { ssid: 'Verizon WiFi' },
-    { ssid: 'McDonald\'s Wifi' },
-    { ssid: 'Joe\'s iPhone' },
-    { ssid: 'NETGEAR68' },
-    { ssid: 'Who wants free WiFi' },
-    { ssid: 'Free WiFi Initiative' },
-    { ssid: 'Prada WiFi' },
-    { ssid: 'AndroidAP' },
-    { ssid: 'Linksys' },
-    { ssid: 'PuzzleConf' },
-    { ssid: '[binary stuff]' },
-    { ssid: 'Hyatt' },
-    { ssid: 'xfinitywifi' },
-    { ssid: 'Muller home' },
-].map(options => new AccessPoint(options));
-
 let currentAP;
 let currentPosition = new Point(0, 0);
 let currentRoom;
