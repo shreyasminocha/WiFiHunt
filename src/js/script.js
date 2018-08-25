@@ -5,14 +5,8 @@ function debug(stuff) {
 }
 
 const goal = {
-    download: {
-        total: 2048,
-        completed: 0
-    },
-    upload: {
-        total: 1024,
-        completed: 0
-    }
+    download: { total: 2048, completed: 0 },
+    upload: { total: 1024, completed: 0 }
 };
 
 let currentAP;
@@ -21,13 +15,11 @@ let currentRoom;
 
 let battery = 100;
 let batteryExhaustionRate;
-const rooms = new Map(null);
+
 let angleOfRotation = 90;
 
-let networkListOpen = false;
+let isNetworkListOpen = false;
 let isPaused = false;
-
-const networkListDimensions = { width: 200, height: 600 };
 
 window.onload = () => {
     kontra.init();
@@ -83,12 +75,31 @@ window.onload = () => {
     });
 
     kontra.keys.bind('p', () => {
-        debug('pause');
+        togglePauseState();
+
+        if (isPaused) {
+            debug('this is the pause "dialog box"');
+        } else {
+            debug('get rid of the pause "dialog box"');
+        }
     });
 
     kontra.keys.bind('n', () => {
-        debug('list networks');
-        debug(getAccessPoints(currentPosition));
+        togglePauseState();
+
+        if (isNetworkListOpen) {
+            debug('get rid of the network list');
+            isNetworkListOpen = false;
+            return;
+        }
+
+        debug('available networks:');
+
+        for (const accessPoint of getAccessPoints(currentPosition)) {
+            debug(accessPoint.ssid);
+        }
+
+        isNetworkListOpen = true;
     });
 
     loop.start();
@@ -98,4 +109,10 @@ function getAccessPoints(point) {
     return accessPoints.filter((accessPoint) => {
         return accessPoint.isInRange(point);
     });
+}
+
+function togglePauseState() {
+    debug(`was it paused? ${isPaused}`);
+    isPaused = !isPaused;
+    debug(`is it paused? ${isPaused}`);
 }
