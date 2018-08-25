@@ -81,7 +81,9 @@ gulp.task('buildCSS', () => {
 gulp.task('buildJS', () => {
     return gulp.src(paths.src.js)
         .pipe(concat(paths.dist.js))
-        .pipe(minifyJS())
+        .pipe(minifyJS({
+            mangle: { toplevel: true }
+        }))
         .pipe(gulp.dest(paths.dist.dir));
 });
 
