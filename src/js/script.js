@@ -11,22 +11,30 @@ const goal = {
 
 let currentAP;
 let currentPosition = new Point(0, 0);
-let currentRoom;
 
-let battery = 100;
-let batteryExhaustionRate;
+let batteryLevel = 100;
 
-let angleOfRotation = 90;
+// battery level drop per second
+let batteryDropRate = {
+    active: 0.3,
+    idle: 0.1,
+};
+
+batteryDropRate.current = batteryDropRate.idle;
+
+let angleOfRotation = 90; // in degrees
 
 let isNetworkListOpen = false;
+let isGamePlayPaused = false;
 let isPaused = false;
+let isOver = false;
 
 window.onload = () => {
     kontra.init();
 
     const playerDimensions = { width: 75, height: 125 };
 
-    let player = kontra.sprite({
+    const player = kontra.sprite({
         color: 'red',
         x: (kontra.canvas.width - playerDimensions.width) / 2,
         y: (kontra.canvas.height - playerDimensions.height) - 20,
@@ -37,6 +45,21 @@ window.onload = () => {
     const loop = kontra.gameLoop({
         update: () => {
             player.update();
+
+            if (isNetworkListOpen) {
+                batteryDropRate.current = batteryDropRate.active;
+            } else {
+                batteryDropRate.current = batteryDropRate.idle;
+            }
+
+            if (!isOver) {
+                const dropPerFrame = batteryDropRate.current / 50;
+                batteryLevel -= dropPerFrame;
+            }
+
+            if (batteryLevel < 0 && !isOver) {
+                gameOver();
+            }
         },
         render: () => {
             player.render();
@@ -75,7 +98,8 @@ window.onload = () => {
     });
 
     kontra.keys.bind('p', () => {
-        togglePauseState();
+        isPaused = !isPaused;
+        isGamePlayPaused = !isGamePlayPaused;
 
         if (isPaused) {
             debug('this is the pause "dialog box"');
@@ -85,7 +109,7 @@ window.onload = () => {
     });
 
     kontra.keys.bind('n', () => {
-        togglePauseState();
+        isPaused = !isPaused;
 
         if (isNetworkListOpen) {
             debug('get rid of the network list');
@@ -111,8 +135,9 @@ function getAccessPoints(point) {
     });
 }
 
-function togglePauseState() {
-    debug(`was it paused? ${isPaused}`);
-    isPaused = !isPaused;
-    debug(`is it paused? ${isPaused}`);
+function gameOver() {
+    isGamePlayPaused = true;
+    isOver = true;
+    batteryLevel = 0;
+    debug('game up!');
 }
