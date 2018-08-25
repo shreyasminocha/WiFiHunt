@@ -18,7 +18,12 @@ const paths = {
     src: {
         html: 'src/index.html',
         css: 'src/css/**.css',
-        js: 'src/js/**.js',
+        js: [
+            'src/js/kontra.js',
+            'src/js/point.js',
+            'src/js/accessPoint.js',
+            'src/js/script.js'
+        ],
         images: 'src/images/**'
     },
     dist: {
@@ -44,7 +49,7 @@ gulp.task('lintCSS', () => {
 gulp.task('lintJS', () => {
     return gulp.src(paths.src.js)
         .pipe(lintJS())
-        .pipe(lintJS.failAfterError());
+        .pipe(lintJS);
 });
 
 gulp.task('cleanDist', () => {

@@ -4,20 +4,6 @@ function debug(stuff) {
     if (debugOn) console.log(stuff);
 }
 
-class AccessPoint {}
-
-class Point {
-    constructor(x, y) {
-        this.x = x; this.y = y;
-    }
-
-    distanceTo(other) {
-        return Math.sqrt(
-            ((this.x - other.x) ** 2) + ((this.y - other.y) ** 2)
-        );
-    }
-}
-
 const goal = {
     download: {
         total: 2048,
@@ -41,7 +27,23 @@ const achievements = [
     { name: 'Broke', description: 'Run out of cash' },
 ];
 
-const accessPoints = [];
+const accessPoints = [
+    { ssid: 'Verizon WiFi' },
+    { ssid: 'McDonald\'s Wifi' },
+    { ssid: 'Joe\'s iPhone' },
+    { ssid: 'NETGEAR68' },
+    { ssid: 'Who wants free WiFi' },
+    { ssid: 'Free WiFi Initiative' },
+    { ssid: 'Prada WiFi' },
+    { ssid: 'AndroidAP' },
+    { ssid: 'Linksys' },
+    { ssid: 'PuzzleConf' },
+    { ssid: '[binary stuff]' },
+    { ssid: 'Hyatt' },
+    { ssid: 'xfinitywifi' },
+    { ssid: 'Muller home' },
+].map(options => new AccessPoint(options));
+
 let currentAP;
 let currentPosition = new Point(0, 0);
 let currentRoom;
@@ -115,14 +117,15 @@ window.onload = () => {
 
     kontra.keys.bind('n', () => {
         debug('list networks');
+        debug(getAccessPoints(currentPosition));
     });
 
     loop.start();
 };
 
 function getAccessPoints(point) {
-    accessPoints.filter((accessPoint) => {
-        return point.distanceTo(accessPoint.centre) <= accessPoint.radius;
+    return accessPoints.filter((accessPoint) => {
+        return accessPoint.isInRange(point);
     });
 }
 
