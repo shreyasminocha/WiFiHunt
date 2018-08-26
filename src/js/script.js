@@ -32,14 +32,15 @@ let isOver = false;
 window.onload = () => {
     kontra.init();
 
-    const playerDimensions = { width: 75, height: 125 };
+    const sprite = new Image();
+    sprite.src = 'images/player.png';
+
+    const playerDimensions = { width: 76, height: 126 };
 
     const player = kontra.sprite({
-        color: 'red',
         x: (kontra.canvas.width - playerDimensions.width) / 2,
         y: (kontra.canvas.height - playerDimensions.height) - 20,
-        width: playerDimensions.width,
-        height: playerDimensions.height
+        image: sprite
     });
 
     const loop = kontra.gameLoop({

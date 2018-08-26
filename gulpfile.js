@@ -10,7 +10,6 @@ const minifyJS = require('gulp-uglify-es').default;
 const concat = require('gulp-concat');
 const rename = require('gulp-rename');
 const replaceHTML = require('gulp-html-replace');
-const imagemin = require('gulp-imagemin');
 const zip = require('gulp-zip');
 const checkFileSize = require('gulp-check-filesize');
 
@@ -58,7 +57,7 @@ gulp.task('lintJS', () => {
 });
 
 gulp.task('cleanDist', () => {
-    return gulp.src('dist/*', { read: false })
+    return gulp.src('dist/**/*', { read: false })
         .pipe(deleteFiles());
 });
 
@@ -89,9 +88,8 @@ gulp.task('buildJS', () => {
         .pipe(gulp.dest(paths.dist.dir));
 });
 
-gulp.task('optimizeImages', () => {
+gulp.task('copyImages', () => {
     return gulp.src(paths.src.images)
-        .pipe(imagemin())
         .pipe(gulp.dest(paths.dist.images));
 });
 
@@ -115,7 +113,7 @@ gulp.task('test', gulp.parallel(
 
 gulp.task('build', gulp.series(
     'cleanDist',
-    gulp.parallel('buildHTML', 'buildCSS', 'buildJS', 'optimizeImages'),
+    gulp.parallel('buildHTML', 'buildCSS', 'buildJS', 'copyImages'),
     'zip'
 ));
 
@@ -123,7 +121,7 @@ gulp.task('watch', () => {
     gulp.watch(paths.src.html, gulp.series('buildHTML', 'zip'));
     gulp.watch(paths.src.css, gulp.series('buildCSS', 'zip'));
     gulp.watch(paths.src.js, gulp.series('buildJS', 'zip'));
-    gulp.watch(paths.src.images, gulp.series('optimizeImages', 'zip'));
+    gulp.watch(paths.src.images, gulp.series('copyImages', 'zip'));
 });
 
 gulp.task('default', gulp.series(

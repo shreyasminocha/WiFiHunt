@@ -17,7 +17,6 @@
         "gulp-eslint": "^5.0.0",
         "gulp-html-replace": "^1.6.2",
         "gulp-htmllint": "0.0.15",
-        "gulp-imagemin": "^4.1.0",
         "gulp-minify-html": "^1.0.6",
         "gulp-rename": "^1.4.0",
         "gulp-rimraf": "^0.2.2",
