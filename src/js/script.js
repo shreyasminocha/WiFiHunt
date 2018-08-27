@@ -10,12 +10,12 @@ const goal = {
 };
 
 let currentAP;
-let currentPosition = new Point(0, 0);
+const currentPosition = new Point(0, 0);
 
 let batteryLevel = 100;
 
 // battery level drop per second
-let batteryDropRate = {
+const batteryDropRate = {
     active: 0.3,
     idle: 0.1,
 };
@@ -28,6 +28,8 @@ let isNetworkListOpen = false;
 let isGamePlayPaused = false;
 let isPaused = false;
 let isOver = false;
+
+const movementKeys = ['left', 'right', 'up', 'a', 'd', 'w'];
 
 function game() {
     kontra.init();
@@ -70,9 +72,7 @@ function game() {
         }
     });
 
-    kontra.keys.bind(['up', 'w'], moveForward);
-    kontra.keys.bind(['left', 'a'], turnLeft);
-    kontra.keys.bind(['right', 'd'], turnRight);
+    bindMovementKeys();
     kontra.keys.bind('p', togglePause);
     kontra.keys.bind('n', toggleNetworkList);
 
@@ -118,24 +118,30 @@ function togglePause() {
     isGamePlayPaused = !isGamePlayPaused;
 
     if (isPaused) {
+        kontra.keys.unbind([...movementKeys, 'n']);
         debug('this is the pause "dialog box"');
     } else {
         debug('get rid of the pause "dialog box"');
+        bindMovementKeys();
+        kontra.keys.bind('n', toggleNetworkList);
     }
 }
 
 function toggleNetworkList() {
-    isPaused = !isPaused;
-
-    function hideList() {
-        debug('get rid of the network list');
+    function hideNetworkList() {
         isNetworkListOpen = false;
+        kontra.keys.unbind(['j', 'k', 'enter', 'esc']);
+        debug('get rid of the network list');
+
+        kontra.keys.bind('p', togglePause);
     }
 
     if (isNetworkListOpen) {
-        hideList();
+        hideNetworkList();
         return;
     }
+
+    kontra.keys.unbind(['left', 'right', 'up', 'a', 'd', 'w', 'p']);
 
     debug('available networks:');
 
@@ -144,7 +150,6 @@ function toggleNetworkList() {
     }
 
     isNetworkListOpen = true;
-
     let cursor = 0;
 
     kontra.keys.bind('j', () => {
@@ -159,14 +164,18 @@ function toggleNetworkList() {
         const available = getAccessPoints(currentPosition);
         currentAP = available[cursor];
         debug(currentAP);
-        kontra.keys.unbind(['j', 'k', 'enter', 'esc']);
-        hideList();
+        hideNetworkList();
     });
 
     kontra.keys.bind('esc', () => {
-        hideList();
-        kontra.keys.unbind(['j', 'k', 'enter', 'esc']);
+        hideNetworkList();
     });
+}
+
+function bindMovementKeys() {
+    kontra.keys.bind(['up', 'w'], moveForward);
+    kontra.keys.bind(['left', 'a'], turnLeft);
+    kontra.keys.bind(['right', 'd'], turnRight);
 }
 
 function getAccessPoints(point) {
@@ -180,9 +189,5 @@ function gameOver() {
     isOver = true;
     batteryLevel = 0;
     debug('game up!');
-}
-
-function unbindAllControlsBut(except) {
-    const allControls = ['left', 'right', 'up', 'n', 'p'];
-    kontra.keys.unbind(allControls);
+    kontra.gameLoop.stop();
 }
