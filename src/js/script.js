@@ -127,9 +127,13 @@ function togglePause() {
 function toggleNetworkList() {
     isPaused = !isPaused;
 
-    if (isNetworkListOpen) {
+    function hideList() {
         debug('get rid of the network list');
         isNetworkListOpen = false;
+    }
+
+    if (isNetworkListOpen) {
+        hideList();
         return;
     }
 
@@ -140,6 +144,29 @@ function toggleNetworkList() {
     }
 
     isNetworkListOpen = true;
+
+    let cursor = 0;
+
+    kontra.keys.bind('j', () => {
+        if (cursor < getAccessPoints(currentPosition).length - 1) cursor++;
+    });
+
+    kontra.keys.bind('k', () => {
+        if (cursor > 0) cursor--;
+    });
+
+    kontra.keys.bind('enter', () => {
+        const available = getAccessPoints(currentPosition);
+        currentAP = available[cursor];
+        debug(currentAP);
+        kontra.keys.unbind(['j', 'k', 'enter', 'esc']);
+        hideList();
+    });
+
+    kontra.keys.bind('esc', () => {
+        hideList();
+        kontra.keys.unbind(['j', 'k', 'enter', 'esc']);
+    });
 }
 
 function getAccessPoints(point) {

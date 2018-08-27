@@ -5,6 +5,9 @@ body {
 
 canvas {
     background: silver;
+    display: block;
+    width: 100vw;
+    height: 100vh;
 }
 
 footer {
