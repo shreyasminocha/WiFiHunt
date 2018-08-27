@@ -70,71 +70,77 @@ function game() {
         }
     });
 
-    kontra.keys.bind(['up', 'w'], () => {
-        debug(toRadians(angleOfRotation));
-
-        const [xComponent, yComponent] = polarToCartesian(angleOfRotation, 1);
-
-        currentPosition.x += xComponent;
-        currentPosition.y += yComponent;
-
-        debug(`(${currentPosition.x}, ${currentPosition.y})`);
-    });
-
-    kontra.keys.bind(['left', 'a'], () => {
-        angleOfRotation += 1;
-
-        if (angleOfRotation >= 360) {
-            angleOfRotation = 0;
-        }
-
-        debug(angleOfRotation);
-    });
-
-    kontra.keys.bind(['right', 'd'], () => {
-        angleOfRotation -= 1;
-
-        if (angleOfRotation < 0) {
-            angleOfRotation = 359;
-        }
-
-        debug(angleOfRotation);
-    });
-
-    kontra.keys.bind('p', () => {
-        isPaused = !isPaused;
-        isGamePlayPaused = !isGamePlayPaused;
-
-        if (isPaused) {
-            debug('this is the pause "dialog box"');
-        } else {
-            debug('get rid of the pause "dialog box"');
-        }
-    });
-
-    kontra.keys.bind('n', () => {
-        isPaused = !isPaused;
-
-        if (isNetworkListOpen) {
-            debug('get rid of the network list');
-            isNetworkListOpen = false;
-            return;
-        }
-
-        debug('available networks:');
-
-        for (const accessPoint of getAccessPoints(currentPosition)) {
-            debug(accessPoint.ssid);
-        }
-
-        isNetworkListOpen = true;
-    });
+    kontra.keys.bind(['up', 'w'], moveForward);
+    kontra.keys.bind(['left', 'a'], turnLeft);
+    kontra.keys.bind(['right', 'd'], turnRight);
+    kontra.keys.bind('p', togglePause);
+    kontra.keys.bind('n', toggleNetworkList);
 
     loop.start();
 }
 
 window.onload = game;
 window.onresize = game;
+
+function moveForward() {
+    debug(toRadians(angleOfRotation));
+
+    const [xComponent, yComponent] = polarToCartesian(angleOfRotation, 1);
+
+    currentPosition.x += xComponent;
+    currentPosition.y += yComponent;
+
+    debug(`(${currentPosition.x}, ${currentPosition.y})`);
+}
+
+function turnLeft() {
+    angleOfRotation += 1;
+
+    if (angleOfRotation >= 360) {
+        angleOfRotation = 0;
+    }
+
+    debug(angleOfRotation);
+}
+
+function turnRight() {
+    angleOfRotation -= 1;
+
+    if (angleOfRotation < 0) {
+        angleOfRotation = 359;
+    }
+
+    debug(angleOfRotation);
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+    isGamePlayPaused = !isGamePlayPaused;
+
+    if (isPaused) {
+        debug('this is the pause "dialog box"');
+    } else {
+        debug('get rid of the pause "dialog box"');
+    }
+}
+
+function toggleNetworkList() {
+    isPaused = !isPaused;
+
+    if (isNetworkListOpen) {
+        debug('get rid of the network list');
+        isNetworkListOpen = false;
+        return;
+    }
+
+    debug('available networks:');
+
+    for (const accessPoint of getAccessPoints(currentPosition)) {
+        debug(accessPoint.ssid);
+    }
+
+    isNetworkListOpen = true;
+}
 
 function getAccessPoints(point) {
     return accessPoints.filter((accessPoint) => {
