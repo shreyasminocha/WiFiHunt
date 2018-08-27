@@ -29,8 +29,11 @@ let isGamePlayPaused = false;
 let isPaused = false;
 let isOver = false;
 
-window.onload = () => {
+function game() {
     kontra.init();
+
+    kontra.canvas.width = window.innerWidth - 15;
+    kontra.canvas.height = window.innerHeight;
 
     const sprite = new Image();
     sprite.src = 'images/player.png';
@@ -128,7 +131,10 @@ window.onload = () => {
     });
 
     loop.start();
-};
+}
+
+window.onload = game;
+window.onresize = game;
 
 function getAccessPoints(point) {
     return accessPoints.filter((accessPoint) => {
@@ -141,4 +147,9 @@ function gameOver() {
     isOver = true;
     batteryLevel = 0;
     debug('game up!');
+}
+
+function unbindAllControlsBut(except) {
+    const allControls = ['left', 'right', 'up', 'n', 'p'];
+    kontra.keys.unbind(allControls);
 }
