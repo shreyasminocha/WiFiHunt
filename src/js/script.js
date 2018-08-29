@@ -4,12 +4,20 @@ function debug(stuff) {
     if (debugOn) console.log(stuff);
 }
 
-const goal = {
-    download: { total: 2048, completed: 0 },
-    upload: { total: 1024, completed: 0 }
+// constants //
+
+const fps = 50;
+const movementKeys = ['left', 'right', 'up', 'a', 'd', 'w'];
+
+// variables //
+
+const remainingGoal = {
+    // in MiB
+    download: 2048,
+    upload: 1024
 };
 
-let currentAP;
+let currentAP = null;
 const currentPosition = new Point(0, 0);
 
 let batteryLevel = 100;
@@ -25,11 +33,9 @@ batteryDropRate.current = batteryDropRate.idle;
 let angleOfRotation = 90; // in degrees
 
 let isNetworkListOpen = false;
-let isGamePlayPaused = false;
 let isPaused = false;
-let isOver = false;
 
-const movementKeys = ['left', 'right', 'up', 'a', 'd', 'w'];
+// heart of the game //
 
 function game() {
     kontra.init();
@@ -49,6 +55,7 @@ function game() {
     });
 
     const loop = kontra.gameLoop({
+        fps,
         update: () => {
             player.update();
 
@@ -58,13 +65,23 @@ function game() {
                 batteryDropRate.current = batteryDropRate.idle;
             }
 
-            if (!isOver) {
-                const dropPerFrame = batteryDropRate.current / 50;
-                batteryLevel -= dropPerFrame;
+            const dropPerFrame = batteryDropRate.current / fps;
+            batteryLevel -= dropPerFrame;
+
+            if (batteryLevel < 0) {
+                gameOver(false);
             }
 
-            if (batteryLevel < 0 && !isOver) {
-                gameOver();
+            if (currentAP !== null) {
+                remainingGoal.download -= (currentAP.speed.download / fps);
+                remainingGoal.upload -= (currentAP.speed.upload / fps);
+            }
+
+            if (remainingGoal.download < 0) remainingGoal.download = 0;
+            if (remainingGoal.upload < 0) remainingGoal.upload = 0;
+
+            if (remainingGoal.download === 0 && remainingGoal.upload === 0) {
+                gameOver(true);
             }
         },
         render: () => {
@@ -81,6 +98,9 @@ function game() {
 
 window.onload = game;
 window.onresize = game;
+
+
+// navigation //
 
 function moveForward() {
     debug(toRadians(angleOfRotation));
@@ -113,9 +133,10 @@ function turnRight() {
     debug(angleOfRotation);
 }
 
+// toggle states //
+
 function togglePause() {
     isPaused = !isPaused;
-    isGamePlayPaused = !isGamePlayPaused;
 
     if (isPaused) {
         kontra.keys.unbind([...movementKeys, 'n']);
@@ -172,6 +193,15 @@ function toggleNetworkList() {
     });
 }
 
+function gameOver(wasSuccessful) {
+    if (!wasSuccessful) batteryLevel = 0;
+
+    debug(`game up. you ${wasSuccessful ? 'won' : 'lost'}.`);
+    kontra.gameLoop.stop();
+}
+
+// utility //
+
 function bindMovementKeys() {
     kontra.keys.bind(['up', 'w'], moveForward);
     kontra.keys.bind(['left', 'a'], turnLeft);
@@ -182,12 +212,4 @@ function getAccessPoints(point) {
     return accessPoints.filter((accessPoint) => {
         return accessPoint.isInRange(point);
     });
-}
-
-function gameOver() {
-    isGamePlayPaused = true;
-    isOver = true;
-    batteryLevel = 0;
-    debug('game up!');
-    kontra.gameLoop.stop();
 }
