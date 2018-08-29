@@ -51,8 +51,7 @@ gulp.task('lintCSS', () => {
 
 gulp.task('lintJS', () => {
     return gulp.src(paths.src.js)
-        .pipe(lintJS())
-        .pipe(lintJS);
+        .pipe(lintJS());
 });
 
 gulp.task('cleanDist', () => {
