@@ -70,6 +70,7 @@ function game() {
 
             if (batteryLevel < 0) {
                 gameOver(false);
+                loop.stop();
             }
 
             if (currentAP !== null) {
@@ -82,6 +83,7 @@ function game() {
 
             if (remainingGoal.download === 0 && remainingGoal.upload === 0) {
                 gameOver(true);
+                loop.stop();
             }
         },
         render: () => {
@@ -197,7 +199,6 @@ function gameOver(wasSuccessful) {
     if (!wasSuccessful) batteryLevel = 0;
 
     debug(`game up. you ${wasSuccessful ? 'won' : 'lost'}.`);
-    kontra.gameLoop.stop();
 }
 
 // utility //
