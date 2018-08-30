@@ -196,7 +196,7 @@ function showNetworkList() {
         if (selected.password !== undefined) {
             const attempt = prompt(`Enter a ${selected.encryption} password:`);
 
-            if (attempt !== selected.password) {
+            if (hash(attempt) !== selected.password) {
                 cursor = 0;
                 alert('You entered an incorrect password');
 

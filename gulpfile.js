@@ -19,6 +19,7 @@ const paths = {
         css: 'src/css/**.css',
         js: [
             'src/js/kontra.js',
+            'src/js/lib/hash.js',
             'src/js/lib/toFixed.js',
             'src/js/lib/toRadians.js',
             'src/js/lib/polarToCartesian.js',

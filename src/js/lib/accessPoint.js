@@ -6,7 +6,7 @@ class AccessPoint {
         this.speed = options.speed; // in MiB per second
         this.jitter = options.jitter;
         this.encryption = options.encryption;
-        this.password = options.password;
+        this.password = options.password; // stored as a hash
     }
 
     isInRange(point) {

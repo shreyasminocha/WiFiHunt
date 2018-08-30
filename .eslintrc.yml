@@ -37,3 +37,7 @@ overrides:
         files: src/js/lib/*.js
         rules:
             no-unused-vars: off
+    -
+        files: src/js/lib/hash.js
+        rules:
+            no-bitwise: off

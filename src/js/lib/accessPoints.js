@@ -33,7 +33,9 @@ const accessPoints = [
         ssid: 'Prada WiFi',
         centre: new Point(-16, 0),
         radius: 24,
-        speed: { download: 10, upload: 20 }
+        speed: { download: 10, upload: 20 },
+        password: 1265856690,
+        encryption: 'WPA2'
     }, {
         ssid: 'AndroidAP',
         centre: new Point(29, -15),
