@@ -160,6 +160,7 @@ function toggleNetworkList() {
         debug('get rid of the network list');
 
         kontra.keys.bind('p', togglePause);
+        kontra.keys.bind('h', toggleHelp);
     }
 
     if (isNetworkListOpen) {
