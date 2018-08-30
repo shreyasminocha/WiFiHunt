@@ -103,7 +103,6 @@ function game() {
 window.onload = game;
 window.onresize = game;
 
-
 // navigation //
 
 function moveForward() {
@@ -192,7 +191,20 @@ function showNetworkList() {
 
     kontra.keys.bind('enter', () => {
         const available = getAccessPoints(currentPosition);
-        currentAP = available[cursor];
+        const selected = available[cursor];
+
+        if (selected.password !== undefined) {
+            const attempt = prompt(`Enter a ${selected.encryption} password:`);
+
+            if (attempt !== selected.password) {
+                cursor = 0;
+                alert('You entered an incorrect password');
+
+                return;
+            }
+        }
+
+        currentAP = selected;
 
         debug(currentAP);
 
