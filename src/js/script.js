@@ -163,10 +163,10 @@ function pause() {
 
 function unPause() {
     isPaused = false;
-    bindMovementKeys();
 
     debug('get rid of the pause "dialog box"');
 
+    bindMovementKeys();
     kontra.keys.bind('n', toggleNetworkList);
     kontra.keys.bind('h', toggleHelp);
 }
@@ -193,7 +193,9 @@ function showNetworkList() {
     kontra.keys.bind('enter', () => {
         const available = getAccessPoints(currentPosition);
         currentAP = available[cursor];
+
         debug(currentAP);
+
         hideNetworkList();
     });
 }
@@ -204,6 +206,7 @@ function hideNetworkList() {
 
     debug('get rid of the network list');
 
+    bindMovementKeys();
     kontra.keys.bind('p', togglePause);
     kontra.keys.bind('h', toggleHelp);
 }
@@ -230,6 +233,7 @@ function hideHelp() {
 
     debug('get rid of the help "dialog box"');
 
+    bindMovementKeys();
     kontra.keys.bind('n', toggleNetworkList);
     kontra.keys.bind('p', togglePause);
 }
