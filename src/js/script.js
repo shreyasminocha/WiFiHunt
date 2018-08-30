@@ -156,7 +156,7 @@ function togglePause() {
 function toggleNetworkList() {
     function hideNetworkList() {
         isNetworkListOpen = false;
-        kontra.keys.unbind(['j', 'k', 'enter', 'esc']);
+        kontra.keys.unbind(['down', 'up', 'enter']);
         debug('get rid of the network list');
 
         kontra.keys.bind('p', togglePause);
@@ -179,11 +179,11 @@ function toggleNetworkList() {
     isNetworkListOpen = true;
     let cursor = 0;
 
-    kontra.keys.bind('j', () => {
+    kontra.keys.bind('down', () => {
         if (cursor < getAccessPoints(currentPosition).length - 1) cursor++;
     });
 
-    kontra.keys.bind('k', () => {
+    kontra.keys.bind('up', () => {
         if (cursor > 0) cursor--;
     });
 
@@ -191,10 +191,6 @@ function toggleNetworkList() {
         const available = getAccessPoints(currentPosition);
         currentAP = available[cursor];
         debug(currentAP);
-        hideNetworkList();
-    });
-
-    kontra.keys.bind('esc', () => {
         hideNetworkList();
     });
 }
