@@ -140,43 +140,46 @@ function turnRight() {
 // toggle states //
 
 function togglePause() {
-    isPaused = !isPaused;
-
-    if (isPaused) {
-        kontra.keys.unbind([...movementKeys, 'n', 'h']);
-        debug('this is the pause "dialog box"');
-    } else {
-        debug('get rid of the pause "dialog box"');
-        bindMovementKeys();
-        kontra.keys.bind('n', toggleNetworkList);
-        kontra.keys.bind('h', toggleHelp);
-    }
+    if (!isPaused) pause();
+    else unPause();
 }
 
 function toggleNetworkList() {
-    function hideNetworkList() {
-        isNetworkListOpen = false;
-        kontra.keys.unbind(['down', 'up', 'enter']);
-        debug('get rid of the network list');
+    if (!isNetworkListOpen) showNetworkList();
+    else hideNetworkList();
+}
 
-        kontra.keys.bind('p', togglePause);
-        kontra.keys.bind('h', toggleHelp);
-    }
+function toggleHelp() {
+    if (!isHelpOpen) showHelp();
+    else hideHelp();
+}
 
-    if (isNetworkListOpen) {
-        hideNetworkList();
-        return;
-    }
+function pause() {
+    isPaused = true;
+    kontra.keys.unbind([...movementKeys, 'n', 'h']);
 
+    debug('this is the pause "dialog box"');
+}
+
+function unPause() {
+    isPaused = false;
+    bindMovementKeys();
+
+    debug('get rid of the pause "dialog box"');
+
+    kontra.keys.bind('n', toggleNetworkList);
+    kontra.keys.bind('h', toggleHelp);
+}
+
+function showNetworkList() {
+    isNetworkListOpen = true;
     kontra.keys.unbind([...movementKeys, 'p', 'h']);
 
     debug('available networks:');
-
     for (const accessPoint of getAccessPoints(currentPosition)) {
         debug(accessPoint.ssid);
     }
 
-    isNetworkListOpen = true;
     let cursor = 0;
 
     kontra.keys.bind('down', () => {
@@ -195,27 +198,40 @@ function toggleNetworkList() {
     });
 }
 
-function toggleHelp() {
-    isHelpOpen = !isHelpOpen;
+function hideNetworkList() {
+    isNetworkListOpen = false;
+    kontra.keys.unbind(['down', 'up', 'enter']);
 
-    if (isHelpOpen) {
-        kontra.keys.unbind([...movementKeys, 'n', 'p']);
-        debug('WiFiHunt');
-        debug('--------');
-        debug('');
-        debug('controls:');
-        debug('↑ / w — move forward');
-        debug('→ / d — turn right');
-        debug('← / a — turn left');
-        debug('h — show this help message');
-        debug('n — show available networks');
-        debug('p — pause');
-    } else {
-        bindMovementKeys();
-        kontra.keys.bind('n', toggleNetworkList);
-        kontra.keys.bind('p', togglePause);
-        debug('get rid of the help "dialog box"');
-    }
+    debug('get rid of the network list');
+
+    kontra.keys.bind('p', togglePause);
+    kontra.keys.bind('h', toggleHelp);
+}
+
+function showHelp() {
+    isHelpOpen = true;
+    kontra.keys.unbind([...movementKeys, 'n', 'p']);
+
+    debug('WiFiHunt');
+    debug('--------');
+    debug('');
+    debug('controls:');
+    debug('↑ / w — move forward');
+    debug('→ / d — turn right');
+    debug('← / a — turn left');
+    debug('h — show this help message');
+    debug('n — show available networks');
+    debug('p — pause');
+}
+
+function hideHelp() {
+    isHelpOpen = false;
+    bindMovementKeys();
+
+    debug('get rid of the help "dialog box"');
+
+    kontra.keys.bind('n', toggleNetworkList);
+    kontra.keys.bind('p', togglePause);
 }
 
 function gameOver(wasSuccessful) {
