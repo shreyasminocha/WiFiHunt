@@ -79,8 +79,8 @@ function game() {
             }
 
             if (currentAP !== null) {
-                remainingGoal.download -= (currentAP.speed.download / fps);
-                remainingGoal.upload -= (currentAP.speed.upload / fps);
+                remainingGoal.download -= currentAP.speedAt(currentPosition, 'download') / fps;
+                remainingGoal.upload -= currentAP.speedAt(currentPosition, 'upload') / fps;
             }
 
             if (remainingGoal.download < 0) remainingGoal.download = 0;

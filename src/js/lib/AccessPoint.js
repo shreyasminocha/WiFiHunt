@@ -12,4 +12,19 @@ class AccessPoint {
     isInRange(point) {
         return point.distanceTo(this.centre) <= this.radius;
     }
+
+    speedAt(point, type) {
+        if (!['download', 'upload'].includes(type)) {
+            throw new Error(`Invalid speed type '${type}'`);
+        }
+
+        const distance = point.distanceTo(this.centre);
+
+        // the `+ 0.01` is to prevent division by zero when `distance` is zero
+        const calculated = this.speed[type] / ((distance + 0.01) ** 2);
+
+        if (calculated < 0) return 0;
+
+        return calculated;
+    }
 }
