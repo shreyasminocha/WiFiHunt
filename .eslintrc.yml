@@ -12,15 +12,15 @@ rules:
     indent:
         - error
         - 4
-    no-use-before-define: 0
-    comma-dangle: 0
-    no-param-reassign: 0
-    no-plusplus: 0
-    arrow-body-style: 0
-    no-restricted-syntax: 0
-    no-console: 0
-    no-prompt: 0
-    no-alert: 0
+    no-use-before-define: off
+    comma-dangle: off
+    no-param-reassign: off
+    no-plusplus: off
+    arrow-body-style: off
+    no-restricted-syntax: off
+    no-console: off
+    no-prompt: off
+    no-alert: off
 
 globals:
     kontra: true
@@ -38,6 +38,6 @@ overrides:
         rules:
             no-unused-vars: off
     -
-        files: src/js/lib/hash.js
+        files: src/js/lib/util.js
         rules:
             no-bitwise: off
