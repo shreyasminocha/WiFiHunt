@@ -74,6 +74,10 @@ function game() {
                 loop.stop();
             }
 
+            if (currentAP !== null && !currentAP.isInRange(currentPosition)) {
+                currentAP = null;
+            }
+
             if (currentAP !== null) {
                 remainingGoal.download -= (currentAP.speed.download / fps);
                 remainingGoal.upload -= (currentAP.speed.upload / fps);
