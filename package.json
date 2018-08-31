@@ -10,6 +10,8 @@
     "author": "Shreyas Minocha",
     "dependencies": {},
     "devDependencies": {
+        "eslint-config-airbnb-base": "^13.1.0",
+        "eslint-plugin-import": "^2.14.0",
         "gulp": "^4.0.0",
         "gulp-check-filesize": "^2.0.1",
         "gulp-clean-css": "^3.9.4",
