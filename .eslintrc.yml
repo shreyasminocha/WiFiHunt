@@ -27,10 +27,11 @@ globals:
     toFixed: true
     toRadians: true
     polarToCartesian: true
+    hash: true
+    colorInGradient: true
     Point: true
     AccessPoint: true
     accessPoints: true
-    hash: true
 
 overrides:
     -

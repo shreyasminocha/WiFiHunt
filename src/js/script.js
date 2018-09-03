@@ -20,16 +20,6 @@ const remainingGoal = {
 let currentAP = null;
 const currentPosition = new Point(0, 0);
 
-let batteryLevel = 100;
-
-// battery level drop per second
-const batteryDropRate = {
-    active: 0.3,
-    idle: 0.1,
-};
-
-batteryDropRate.current = batteryDropRate.idle;
-
 let angleOfRotation = 90; // in degrees
 
 let isNetworkListOpen = false;
@@ -55,24 +45,79 @@ function game() {
         image: sprite
     });
 
-    const loop = kontra.gameLoop({
-        fps,
-        update: () => {
-            player.update();
+    const batteryIndicator = kontra.sprite({
+        level: 100,
 
+        // battery level drop per second
+        dropRate: {
+            active: 0.3,
+            idle: 0.1,
+        },
+
+        update() {
             if (isNetworkListOpen) {
-                batteryDropRate.current = batteryDropRate.active;
+                batteryIndicator.dropRate.current = batteryIndicator.dropRate.active;
             } else {
-                batteryDropRate.current = batteryDropRate.idle;
+                batteryIndicator.dropRate.current = batteryIndicator.dropRate.idle;
             }
 
-            const dropPerFrame = batteryDropRate.current / fps;
-            batteryLevel -= dropPerFrame;
+            const dropPerFrame = batteryIndicator.dropRate.current / fps;
+            batteryIndicator.level -= dropPerFrame;
 
-            if (batteryLevel < 0) {
+            if (batteryIndicator.level < 0) {
+                batteryIndicator.level = 0;
                 gameOver(false);
                 loop.stop();
             }
+        },
+
+        render() {
+            const red = [255, 0, 0];
+            const green = [0, 255, 0];
+
+            const dimensions = { width: 30, height: 19 };
+            const position = { x: 25, y: 25 };
+
+            kontra.context.fillStyle = 'black';
+            kontra.context.fillRect(
+                position.x, position.y,
+                dimensions.width, dimensions.height
+            );
+
+            const capDimensions = { width: 3, height: 8 };
+            const capPosition = {
+                x: position.x + dimensions.width,
+                y: position.y + (((dimensions.height - capDimensions.height) / 2))
+            };
+
+            kontra.context.fillStyle = 'gray';
+            kontra.context.fillRect(
+                capPosition.x, capPosition.y,
+                capDimensions.width, capDimensions.height
+            );
+
+            const indicatorColour = colorInGradient(red, green, batteryIndicator.level / 100);
+            kontra.context.fillStyle = `rgb(${indicatorColour.join(', ')})`;
+            kontra.context.fillRect(
+                position.x, position.y,
+                dimensions.width * (batteryIndicator.level / 100), dimensions.height
+            );
+
+            kontra.context.fillStyle = 'black';
+            kontra.context.font = `${dimensions.height}px monospace`;
+            kontra.context.fillText(
+                Math.ceil(batteryIndicator.level),
+                position.x + dimensions.width + 5,
+                position.y + dimensions.height - 4
+            );
+        }
+    });
+
+    const loop = kontra.gameLoop({
+        fps,
+        update() {
+            player.update();
+            batteryIndicator.update();
 
             if (currentAP !== null && !currentAP.isInRange(currentPosition)) {
                 currentAP = null;
@@ -91,8 +136,9 @@ function game() {
                 loop.stop();
             }
         },
-        render: () => {
+        render() {
             player.render();
+            batteryIndicator.render();
         }
     });
 
@@ -255,8 +301,6 @@ function hideHelp() {
 }
 
 function gameOver(wasSuccessful) {
-    if (!wasSuccessful) batteryLevel = 0;
-
     debug(`game up. you ${wasSuccessful ? 'won' : 'lost'}.`);
 }
 

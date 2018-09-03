@@ -18,3 +18,14 @@ function polarToCartesian(angle, radius) {
 function hash(str) {
     return str.split('').reduce((prevHash, currVal) => (((prevHash << 5) - prevHash) + currVal.charCodeAt(0)) | 0, 0);
 }
+
+function colorInGradient(begin, end, weight) {
+    const partOfEnd = weight;
+    const partOfBegin = 1 - partOfEnd;
+
+    return [
+        Math.round((begin[0] * partOfBegin) + (end[0] * partOfEnd)),
+        Math.round((begin[1] * partOfBegin) + (end[1] * partOfEnd)),
+        Math.round((begin[2] * partOfBegin) + (end[2] * partOfEnd))
+    ];
+}
