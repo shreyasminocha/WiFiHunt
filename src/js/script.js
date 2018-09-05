@@ -117,12 +117,6 @@ function game() {
 
     const networkIndicator = kontra.sprite({
         render() {
-            const centre = { x: 25, y: 90 };
-            const radius = 20;
-
-            const startAngle = toRadians(0);
-            const endAngle = toRadians(-90);
-
             if (currentAP !== null) {
                 kontra.context.strokeStyle = 'black';
                 kontra.context.fillStyle = 'black';
@@ -130,6 +124,12 @@ function game() {
                 kontra.context.strokeStyle = 'gray';
                 kontra.context.fillStyle = 'gray';
             }
+
+            const centre = { x: 40, y: 90 };
+            const radius = 20;
+
+            const startAngle = toRadians(-50);
+            const endAngle = toRadians(-130);
 
             for (let r = radius; r >= 10; r -= 5) {
                 kontra.context.beginPath();
