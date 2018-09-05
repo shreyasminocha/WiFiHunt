@@ -45,7 +45,7 @@ function game() {
         image: sprite
     });
 
-    const batteryIndicator = kontra.sprite({
+    const battery = kontra.sprite({
         level: 100,
 
         // battery level drop per second
@@ -56,16 +56,16 @@ function game() {
 
         update() {
             if (isNetworkListOpen) {
-                batteryIndicator.dropRate.current = batteryIndicator.dropRate.active;
+                battery.dropRate.current = battery.dropRate.active;
             } else {
-                batteryIndicator.dropRate.current = batteryIndicator.dropRate.idle;
+                battery.dropRate.current = battery.dropRate.idle;
             }
 
-            const dropPerFrame = batteryIndicator.dropRate.current / fps;
-            batteryIndicator.level -= dropPerFrame;
+            const dropPerFrame = battery.dropRate.current / fps;
+            battery.level -= dropPerFrame;
 
-            if (batteryIndicator.level < 0) {
-                batteryIndicator.level = 0;
+            if (battery.level < 0) {
+                battery.level = 0;
                 gameOver(false);
                 loop.stop();
             }
@@ -79,10 +79,12 @@ function game() {
             const position = { x: 25, y: 25 };
 
             kontra.context.fillStyle = 'black';
-            kontra.context.fillRect(
+            kontra.context.strokeStyle = 'gray';
+            kontra.context.strokeRect(
                 position.x, position.y,
                 dimensions.width, dimensions.height
             );
+            kontra.context.stroke();
 
             const capDimensions = { width: 3, height: 8 };
             const capPosition = {
@@ -96,20 +98,58 @@ function game() {
                 capDimensions.width, capDimensions.height
             );
 
-            const indicatorColour = colorInGradient(red, green, batteryIndicator.level / 100);
+            const indicatorColour = colorInGradient(red, green, battery.level / 100);
             kontra.context.fillStyle = `rgb(${indicatorColour.join(', ')})`;
             kontra.context.fillRect(
                 position.x, position.y,
-                dimensions.width * (batteryIndicator.level / 100), dimensions.height
+                dimensions.width * (battery.level / 100), dimensions.height
             );
 
             kontra.context.fillStyle = 'black';
             kontra.context.font = `${dimensions.height}px monospace`;
             kontra.context.fillText(
-                Math.ceil(batteryIndicator.level),
-                position.x + dimensions.width + 5,
-                position.y + dimensions.height - 4
+                `${Math.ceil(battery.level)}%`,
+                position.x + dimensions.width + 15,
+                position.y + dimensions.height
             );
+        }
+    });
+
+    const networkIndicator = kontra.sprite({
+        render() {
+            const centre = { x: 25, y: 90 };
+            const radius = 20;
+
+            const startAngle = toRadians(0);
+            const endAngle = toRadians(-90);
+
+            if (currentAP !== null) {
+                kontra.context.strokeStyle = 'black';
+                kontra.context.fillStyle = 'black';
+            } else {
+                kontra.context.strokeStyle = 'gray';
+                kontra.context.fillStyle = 'gray';
+            }
+
+            for (let r = radius; r >= 10; r -= 5) {
+                kontra.context.beginPath();
+                kontra.context.arc(centre.x, centre.y, r, startAngle, endAngle, true);
+                kontra.context.stroke();
+            }
+
+            kontra.context.beginPath();
+            kontra.context.arc(centre.x, centre.y, 5, startAngle, endAngle, true);
+            kontra.context.lineTo(centre.x, centre.y);
+            kontra.context.fill();
+
+            if (currentAP !== null) {
+                kontra.context.font = '19px monospace';
+                kontra.context.fillText(
+                    currentAP.ssid,
+                    25 + radius + 15,
+                    centre.y
+                );
+            }
         }
     });
 
@@ -117,7 +157,8 @@ function game() {
         fps,
         update() {
             player.update();
-            batteryIndicator.update();
+            battery.update();
+            networkIndicator.update();
 
             if (currentAP !== null && !currentAP.isInRange(currentPosition)) {
                 currentAP = null;
@@ -138,7 +179,8 @@ function game() {
         },
         render() {
             player.render();
-            batteryIndicator.render();
+            battery.render();
+            networkIndicator.render();
         }
     });
 
