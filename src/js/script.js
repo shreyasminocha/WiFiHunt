@@ -72,19 +72,17 @@ function game() {
         },
 
         render() {
-            const red = [255, 0, 0];
-            const green = [0, 255, 0];
+            const red = [139, 0, 0];
+            const green = [34, 228, 71];
 
             const dimensions = { width: 30, height: 19 };
             const position = { x: 25, y: 25 };
 
-            kontra.context.fillStyle = 'black';
             kontra.context.strokeStyle = 'gray';
             kontra.context.strokeRect(
                 position.x, position.y,
                 dimensions.width, dimensions.height
             );
-            kontra.context.stroke();
 
             const capDimensions = { width: 3, height: 8 };
             const capPosition = {
@@ -126,12 +124,11 @@ function game() {
             }
 
             const centre = { x: 40, y: 90 };
-            const radius = 20;
 
             const startAngle = toRadians(-50);
             const endAngle = toRadians(-130);
 
-            for (let r = radius; r >= 10; r -= 5) {
+            for (let r = 10; r <= 20; r += 5) {
                 kontra.context.beginPath();
                 kontra.context.arc(centre.x, centre.y, r, startAngle, endAngle, true);
                 kontra.context.stroke();
@@ -146,7 +143,7 @@ function game() {
                 kontra.context.font = '19px monospace';
                 kontra.context.fillText(
                     currentAP.ssid,
-                    25 + radius + 15,
+                    25 + 35,
                     centre.y
                 );
             }
@@ -193,7 +190,6 @@ function game() {
 }
 
 window.onload = game;
-window.onresize = game;
 
 // navigation //
 
