@@ -61,8 +61,10 @@ function game() {
                 battery.dropRate.current = battery.dropRate.idle;
             }
 
-            const dropPerFrame = battery.dropRate.current / fps;
-            battery.level -= dropPerFrame;
+            if (!isPaused) {
+                const dropPerFrame = battery.dropRate.current / fps;
+                battery.level -= dropPerFrame;
+            }
 
             if (battery.level < 0) {
                 battery.level = 0;
@@ -178,6 +180,17 @@ function game() {
             player.render();
             battery.render();
             networkIndicator.render();
+
+            // pause dialog box
+            if (isPaused) {
+                drawDialogBox({ width: 355, height: 140 }, (position) => {
+                    kontra.context.fillText(
+                        'GAME PAUSED. Press \'P\' to unpause.',
+                        position.x + 15,
+                        position.y + 75
+                    );
+                });
+            }
         }
     });
 
@@ -354,4 +367,28 @@ function getAccessPoints(point) {
     return accessPoints.filter((accessPoint) => {
         return accessPoint.isInRange(point);
     });
+}
+
+function drawDialogBox(dimensions, writeText) {
+    // fade window
+    kontra.context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    kontra.context.fillRect(
+        0, 0,
+        kontra.canvas.width, kontra.canvas.height
+    );
+
+    const position = {
+        x: (kontra.canvas.width - dimensions.width) / 2,
+        y: (kontra.canvas.height - dimensions.height) / 2
+    };
+
+    kontra.context.fillStyle = '#282B30';
+    kontra.context.fillRect(
+        position.x, position.y,
+        dimensions.width, dimensions.height
+    );
+
+    kontra.context.fillStyle = 'white';
+    kontra.context.font = '16px monospace';
+    writeText(position, dimensions);
 }
