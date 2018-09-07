@@ -145,10 +145,33 @@ function game() {
                 kontra.context.font = '19px monospace';
                 kontra.context.fillText(
                     currentAP.ssid,
-                    25 + 35,
+                    25 + 45,
                     centre.y
                 );
             }
+        }
+    });
+
+    const money = kontra.sprite({
+        remaining: 500,
+        update() {},
+        render() {
+            const position = { x: 25, y: 130 };
+
+            kontra.context.fillStyle = 'black';
+            kontra.context.font = '19px monospace';
+
+            kontra.context.fillText(
+                '$$$',
+                position.x,
+                position.y
+            );
+
+            kontra.context.fillText(
+                money.remaining,
+                position.x + 45,
+                position.y
+            );
         }
     });
 
@@ -180,6 +203,7 @@ function game() {
             player.render();
             battery.render();
             networkIndicator.render();
+            money.render();
 
             // pause dialog box
             if (isPaused) {
