@@ -185,10 +185,45 @@ function game() {
             if (isPaused) {
                 drawDialogBox({ width: 355, height: 140 }, (position) => {
                     kontra.context.fillText(
-                        'GAME PAUSED. Press \'P\' to unpause.',
+                        'GAME PAUSED.',
                         position.x + 15,
-                        position.y + 75
+                        position.y + 55
                     );
+
+                    kontra.context.fillText(
+                        'Press \'P\' to unpause.',
+                        position.x + 15,
+                        position.y + 100
+                    );
+                });
+            }
+
+            // list of available networks
+            if (isNetworkListOpen) {
+                const availableAPs = getAccessPoints(currentPosition);
+
+                drawDialogBox({
+                    width: 355,
+                    // `82 + ` makes up for the padding and heading
+                    // `25` is the sum of font size and padding for each entry
+                    height: 82 + (availableAPs.length * 25)
+                }, (position) => {
+                    kontra.context.fillText(
+                        'Available Networks:',
+                        position.x + 25, // `25` is the left padding
+                        position.y + 44 // `40` is the top padding
+                    );
+
+                    let yCoordinate = 75;
+                    for (const accessPoint of availableAPs) {
+                        kontra.context.fillText(
+                            accessPoint.ssid,
+                            position.x + 25, // `25` is the left padding
+                            position.y + yCoordinate
+                        );
+
+                        yCoordinate += 25;
+                    }
                 });
             }
         }
@@ -369,9 +404,9 @@ function getAccessPoints(point) {
     });
 }
 
-function drawDialogBox(dimensions, writeText) {
+function drawDialogBox(dimensions, writeText, fontSize = 19) {
     // fade window
-    kontra.context.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    kontra.context.fillStyle = 'rgba(0, 0, 0, 0.25)';
     kontra.context.fillRect(
         0, 0,
         kontra.canvas.width, kontra.canvas.height
@@ -389,6 +424,6 @@ function drawDialogBox(dimensions, writeText) {
     );
 
     kontra.context.fillStyle = 'white';
-    kontra.context.font = '16px monospace';
+    kontra.context.font = `${fontSize}px monospace`;
     writeText(position, dimensions);
 }
