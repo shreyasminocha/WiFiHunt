@@ -209,6 +209,27 @@ function game() {
         }
     });
 
+    const speedIndicator = kontra.sprite({
+        render() {
+            if (currentAP === null) {
+                return;
+            }
+
+            kontra.context.fillStyle = 'black';
+            kontra.context.font = '19px monospace';
+
+            kontra.context.fillText(
+                `↓ Speed: ${Math.ceil(currentAP.speedAt(currentPosition, 'download') * 1024)} KiB/s`,
+                25, 270
+            );
+
+            kontra.context.fillText(
+                `↑ Speed: ${Math.ceil(currentAP.speedAt(currentPosition, 'upload') * 1024)} KiB/s`,
+                25, 270 + 30
+            );
+        }
+    });
+
     const loop = kontra.gameLoop({
         fps,
         update() {
@@ -227,6 +248,7 @@ function game() {
             networkIndicator.render();
             money.render();
             remainingGoal.render();
+            speedIndicator.render();
 
             // pause dialog box
             if (isPaused) {
