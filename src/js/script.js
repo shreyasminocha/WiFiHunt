@@ -11,11 +11,9 @@ const movementKeys = ['left', 'right', 'up', 'a', 'd', 'w'];
 
 // variables //
 
-const remainingGoal = {
-    // in MiB
-    download: 2048,
-    upload: 1024
-};
+// const remainingGoal = {
+
+// };
 
 let currentAP = null;
 const currentPosition = new Point(0, 0);
@@ -154,11 +152,10 @@ function game() {
 
     const money = kontra.sprite({
         remaining: 500,
-        update() {},
         render() {
             const position = { x: 25, y: 130 };
 
-            kontra.context.fillStyle = 'black';
+            kontra.context.fillStyle = 'hsl(50, 90%, 40%)';
             kontra.context.font = '19px monospace';
 
             kontra.context.fillText(
@@ -167,6 +164,7 @@ function game() {
                 position.y
             );
 
+            kontra.context.fillStyle = 'black';
             kontra.context.fillText(
                 money.remaining,
                 position.x + 45,
@@ -175,17 +173,12 @@ function game() {
         }
     });
 
-    const loop = kontra.gameLoop({
-        fps,
+    const remainingGoal = kontra.sprite({
+        // in MiB
+        download: 2048,
+        upload: 1024,
+
         update() {
-            player.update();
-            battery.update();
-            networkIndicator.update();
-
-            if (currentAP !== null && !currentAP.isInRange(currentPosition)) {
-                currentAP = null;
-            }
-
             if (currentAP !== null) {
                 remainingGoal.download -= currentAP.speedAt(currentPosition, 'download') / fps;
                 remainingGoal.upload -= currentAP.speedAt(currentPosition, 'upload') / fps;
@@ -199,11 +192,41 @@ function game() {
                 loop.stop();
             }
         },
+
+        render() {
+            kontra.context.fillStyle = 'black';
+            kontra.context.font = '19px monospace';
+
+            kontra.context.fillText(
+                `↓ Goal: ${Math.ceil(remainingGoal.download)} MiB`,
+                25, 190
+            );
+
+            kontra.context.fillText(
+                `↑ Goal: ${Math.ceil(remainingGoal.upload)} MiB`,
+                25, 190 + 30
+            );
+        }
+    });
+
+    const loop = kontra.gameLoop({
+        fps,
+        update() {
+            player.update();
+            battery.update();
+            networkIndicator.update();
+            remainingGoal.update();
+
+            if (currentAP !== null && !currentAP.isInRange(currentPosition)) {
+                currentAP = null;
+            }
+        },
         render() {
             player.render();
             battery.render();
             networkIndicator.render();
             money.render();
+            remainingGoal.render();
 
             // pause dialog box
             if (isPaused) {
