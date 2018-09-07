@@ -9,12 +9,6 @@ function debug(stuff) {
 const fps = 50;
 const movementKeys = ['left', 'right', 'up', 'a', 'd', 'w'];
 
-// variables //
-
-// const remainingGoal = {
-
-// };
-
 let currentAP = null;
 const currentPosition = new Point(0, 0);
 
@@ -327,8 +321,6 @@ function turnLeft() {
     if (angleOfRotation >= 360) {
         angleOfRotation = 0;
     }
-
-    debug(angleOfRotation);
 }
 
 function turnRight() {
@@ -337,8 +329,6 @@ function turnRight() {
     if (angleOfRotation < 0) {
         angleOfRotation = 359;
     }
-
-    debug(angleOfRotation);
 }
 
 // toggle states //
@@ -361,14 +351,10 @@ function toggleHelp() {
 function pause() {
     isPaused = true;
     kontra.keys.unbind([...movementKeys, 'n', 'h']);
-
-    debug('this is the pause "dialog box"');
 }
 
 function unPause() {
     isPaused = false;
-
-    debug('get rid of the pause "dialog box"');
 
     bindMovementKeys();
     kontra.keys.bind('n', toggleNetworkList);
@@ -378,11 +364,6 @@ function unPause() {
 function showNetworkList() {
     isNetworkListOpen = true;
     kontra.keys.unbind([...movementKeys, 'p', 'h']);
-
-    debug('available networks:');
-    for (const accessPoint of getAccessPoints(currentPosition)) {
-        debug(accessPoint.ssid);
-    }
 
     let cursor = 0;
 
@@ -411,8 +392,6 @@ function showNetworkList() {
 
         currentAP = selected;
 
-        debug(currentAP);
-
         hideNetworkList();
     });
 }
@@ -420,8 +399,6 @@ function showNetworkList() {
 function hideNetworkList() {
     isNetworkListOpen = false;
     kontra.keys.unbind(['down', 'up', 'enter']);
-
-    debug('get rid of the network list');
 
     bindMovementKeys();
     kontra.keys.bind('p', togglePause);
@@ -475,7 +452,7 @@ function getAccessPoints(point) {
 
 function drawDialogBox(dimensions, writeText, fontSize = 19) {
     // fade window
-    kontra.context.fillStyle = 'rgba(0, 0, 0, 0.25)';
+    kontra.context.fillStyle = 'hsla(0, 0%, 0%, 0.25)';
     kontra.context.fillRect(
         0, 0,
         kontra.canvas.width, kontra.canvas.height
@@ -486,7 +463,7 @@ function drawDialogBox(dimensions, writeText, fontSize = 19) {
         y: (kontra.canvas.height - dimensions.height) / 2
     };
 
-    kontra.context.fillStyle = '#282B30';
+    kontra.context.fillStyle = 'hsl(218, 9%, 17%)';
     kontra.context.fillRect(
         position.x, position.y,
         dimensions.width, dimensions.height
