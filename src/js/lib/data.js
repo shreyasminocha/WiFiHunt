@@ -50,7 +50,8 @@ const accessPoints = [
         ssid: 'PuzzleConf',
         centre: new Point(8, 24),
         radius: 24,
-        speed: { download: 10, upload: 20 }
+        speed: { download: 10, upload: 20 },
+        cost: 240
     }, {
         ssid: '[binary stuff]',
         centre: new Point(14, -10),

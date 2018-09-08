@@ -7,6 +7,7 @@ class AccessPoint {
         this.jitter = options.jitter;
         this.encryption = options.encryption;
         this.password = options.password; // stored as a hash
+        this.cost = options.cost; // if purchased, this is set to zero
     }
 
     isInRange(point) {

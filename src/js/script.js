@@ -14,6 +14,8 @@ const currentPosition = new Point(0, 0);
 
 let angleOfRotation = 90; // in degrees
 
+let remainingMoney = 500;
+
 let isNetworkListOpen = false;
 let isPaused = false;
 let isHelpOpen = false;
@@ -144,8 +146,7 @@ function game() {
         }
     });
 
-    const money = kontra.sprite({
-        remaining: 500,
+    const moneyIndicator = kontra.sprite({
         render() {
             const position = { x: 25, y: 130 };
 
@@ -153,14 +154,14 @@ function game() {
             kontra.context.font = '19px monospace';
 
             kontra.context.fillText(
-                '$$$',
+                '💰',
                 position.x,
                 position.y
             );
 
             kontra.context.fillStyle = 'black';
             kontra.context.fillText(
-                money.remaining,
+                remainingMoney,
                 position.x + 45,
                 position.y
             );
@@ -240,7 +241,7 @@ function game() {
             player.render();
             battery.render();
             networkIndicator.render();
-            money.render();
+            moneyIndicator.render();
             remainingGoal.render();
             speedIndicator.render();
 
@@ -379,13 +380,31 @@ function showNetworkList() {
         const available = getAccessPoints(currentPosition);
         const selected = available[cursor];
 
+        debug(selected.cost);
+
+        if (selected.cost !== undefined && selected.cost > 0) {
+            const wishToPurchase = window.confirm(
+                `Do you wish to pay ${selected.cost} to use this network?`
+            );
+
+            if (wishToPurchase) {
+                if (remainingMoney >= selected.cost) {
+                    remainingMoney -= selected.cost;
+                    selected.cost = 0;
+                } else {
+                    alert('You don\'t have enough money to afford this network');
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
+
         if (selected.password !== undefined) {
             const attempt = prompt(`Enter a ${selected.encryption} password:`);
 
             if (hash(attempt) !== selected.password) {
-                cursor = 0;
                 alert('You entered an incorrect password');
-
                 return;
             }
         }
