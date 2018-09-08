@@ -14,29 +14,106 @@ const currentPosition = new Point(0, 0);
 
 let angleOfRotation = 90; // in degrees
 
-let remainingMoney = 500;
-
 let isNetworkListOpen = false;
 let isPaused = false;
 let isHelpOpen = false;
 
-// heart of the game //
-
-function game() {
+window.onload = () => {
     kontra.init();
 
-    kontra.canvas.width = window.innerWidth - 15;
-    kontra.canvas.height = window.innerHeight;
+    const loop = kontra.gameLoop({
+        fps,
+        update() {
+            player.update();
+            battery.update();
+            networkIndicator.update();
+            remainingGoal.update();
 
-    const sprite = new Image();
-    sprite.src = 'images/player.png';
+            if (currentAP !== null && !currentAP.isInRange(currentPosition)) {
+                currentAP = null;
+            }
+        },
+        render() {
+            player.render();
+            battery.render();
+            networkIndicator.render();
+            money.render();
+            remainingGoal.render();
+            speedIndicator.render();
 
-    const playerDimensions = { width: 76, height: 126 };
+            // pause dialog box
+            if (isPaused) {
+                drawDialogBox({ width: 355, height: 140 }, (position) => {
+                    kontra.context.fillText(
+                        'GAME PAUSED.',
+                        position.x + 15,
+                        position.y + 55
+                    );
+
+                    kontra.context.fillText(
+                        'Press \'P\' to unpause.',
+                        position.x + 15,
+                        position.y + 100
+                    );
+                });
+            }
+
+            // list of available networks
+            if (isNetworkListOpen) {
+                const availableAPs = getAccessPoints(currentPosition);
+
+                drawDialogBox({
+                    width: 355,
+                    // `82 + ` makes up for the padding and heading
+                    // `25` is the sum of font size and padding for each entry
+                    height: 82 + (availableAPs.length * 25)
+                }, (position) => {
+                    kontra.context.fillText(
+                        'Available Networks:',
+                        position.x + 25, // `25` is the left padding
+                        position.y + 44 // `40` is the top padding
+                    );
+
+                    let yCoordinate = 75;
+                    for (const accessPoint of availableAPs) {
+                        kontra.context.fillText(
+                            accessPoint.ssid,
+                            position.x + 25, // `25` is the left padding
+                            position.y + yCoordinate
+                        );
+
+                        yCoordinate += 25;
+                    }
+                });
+            }
+        }
+    });
+
+    function game() {
+        kontra.canvas.width = window.innerWidth - 15;
+        kontra.canvas.height = window.innerHeight;
+
+        bindMovementKeys();
+        kontra.keys.bind('p', togglePause);
+        kontra.keys.bind('n', toggleNetworkList);
+        kontra.keys.bind('h', toggleHelp);
+
+        loop.start();
+    }
+
+    game();
 
     const player = kontra.sprite({
-        x: (kontra.canvas.width - playerDimensions.width) / 2,
-        y: (kontra.canvas.height - playerDimensions.height) - 20,
-        image: sprite
+        render() {
+            const sprite = new Image();
+            sprite.src = 'images/player.png';
+
+            kontra.context.drawImage(
+                sprite,
+                (kontra.canvas.width - sprite.width) / 2,
+                (kontra.canvas.height - sprite.height) - 20
+            );
+        }
     });
 
     const battery = kontra.sprite({
@@ -146,7 +223,8 @@ function game() {
         }
     });
 
-    const moneyIndicator = kontra.sprite({
+    const money = kontra.sprite({
+        remaining: 500,
         render() {
             const position = { x: 25, y: 130 };
 
@@ -161,7 +239,7 @@ function game() {
 
             kontra.context.fillStyle = 'black';
             kontra.context.fillText(
-                remainingMoney,
+                money.remaining,
                 position.x + 45,
                 position.y
             );
@@ -225,270 +303,191 @@ function game() {
         }
     });
 
-    const loop = kontra.gameLoop({
-        fps,
-        update() {
-            player.update();
-            battery.update();
-            networkIndicator.update();
-            remainingGoal.update();
+    // navigation //
 
-            if (currentAP !== null && !currentAP.isInRange(currentPosition)) {
-                currentAP = null;
-            }
-        },
-        render() {
-            player.render();
-            battery.render();
-            networkIndicator.render();
-            moneyIndicator.render();
-            remainingGoal.render();
-            speedIndicator.render();
+    function moveForward() {
+        debug(toRadians(angleOfRotation));
 
-            // pause dialog box
-            if (isPaused) {
-                drawDialogBox({ width: 355, height: 140 }, (position) => {
-                    kontra.context.fillText(
-                        'GAME PAUSED.',
-                        position.x + 15,
-                        position.y + 55
-                    );
+        const [xComponent, yComponent] = polarToCartesian(angleOfRotation, 1);
 
-                    kontra.context.fillText(
-                        'Press \'P\' to unpause.',
-                        position.x + 15,
-                        position.y + 100
-                    );
-                });
-            }
+        currentPosition.x += xComponent;
+        currentPosition.y += yComponent;
 
-            // list of available networks
-            if (isNetworkListOpen) {
-                const availableAPs = getAccessPoints(currentPosition);
+        debug(`(${currentPosition.x}, ${currentPosition.y})`);
+    }
 
-                drawDialogBox({
-                    width: 355,
-                    // `82 + ` makes up for the padding and heading
-                    // `25` is the sum of font size and padding for each entry
-                    height: 82 + (availableAPs.length * 25)
-                }, (position) => {
-                    kontra.context.fillText(
-                        'Available Networks:',
-                        position.x + 25, // `25` is the left padding
-                        position.y + 44 // `40` is the top padding
-                    );
+    function turnLeft() {
+        angleOfRotation += 1;
 
-                    let yCoordinate = 75;
-                    for (const accessPoint of availableAPs) {
-                        kontra.context.fillText(
-                            accessPoint.ssid,
-                            position.x + 25, // `25` is the left padding
-                            position.y + yCoordinate
-                        );
-
-                        yCoordinate += 25;
-                    }
-                });
-            }
+        if (angleOfRotation >= 360) {
+            angleOfRotation = 0;
         }
-    });
-
-    bindMovementKeys();
-    kontra.keys.bind('p', togglePause);
-    kontra.keys.bind('n', toggleNetworkList);
-    kontra.keys.bind('h', toggleHelp);
-
-    loop.start();
-}
-
-window.onload = game;
-
-// navigation //
-
-function moveForward() {
-    debug(toRadians(angleOfRotation));
-
-    const [xComponent, yComponent] = polarToCartesian(angleOfRotation, 1);
-
-    currentPosition.x += xComponent;
-    currentPosition.y += yComponent;
-
-    debug(`(${currentPosition.x}, ${currentPosition.y})`);
-}
-
-function turnLeft() {
-    angleOfRotation += 1;
-
-    if (angleOfRotation >= 360) {
-        angleOfRotation = 0;
     }
-}
 
-function turnRight() {
-    angleOfRotation -= 1;
+    function turnRight() {
+        angleOfRotation -= 1;
 
-    if (angleOfRotation < 0) {
-        angleOfRotation = 359;
+        if (angleOfRotation < 0) {
+            angleOfRotation = 359;
+        }
     }
-}
 
-// toggle states //
+    // toggle states //
 
-function togglePause() {
-    if (!isPaused) pause();
-    else unPause();
-}
+    function togglePause() {
+        if (!isPaused) pause();
+        else unPause();
+    }
 
-function toggleNetworkList() {
-    if (!isNetworkListOpen) showNetworkList();
-    else hideNetworkList();
-}
+    function toggleNetworkList() {
+        if (!isNetworkListOpen) showNetworkList();
+        else hideNetworkList();
+    }
 
-function toggleHelp() {
-    if (!isHelpOpen) showHelp();
-    else hideHelp();
-}
+    function toggleHelp() {
+        if (!isHelpOpen) showHelp();
+        else hideHelp();
+    }
 
-function pause() {
-    isPaused = true;
-    kontra.keys.unbind([...movementKeys, 'n', 'h']);
-}
+    function pause() {
+        isPaused = true;
+        kontra.keys.unbind([...movementKeys, 'n', 'h']);
+    }
 
-function unPause() {
-    isPaused = false;
+    function unPause() {
+        isPaused = false;
 
-    bindMovementKeys();
-    kontra.keys.bind('n', toggleNetworkList);
-    kontra.keys.bind('h', toggleHelp);
-}
+        bindMovementKeys();
+        kontra.keys.bind('n', toggleNetworkList);
+        kontra.keys.bind('h', toggleHelp);
+    }
 
-function showNetworkList() {
-    isNetworkListOpen = true;
-    kontra.keys.unbind([...movementKeys, 'p', 'h']);
+    function showNetworkList() {
+        isNetworkListOpen = true;
+        kontra.keys.unbind([...movementKeys, 'p', 'h']);
 
-    let cursor = 0;
+        let cursor = 0;
 
-    kontra.keys.bind('down', () => {
-        if (cursor < getAccessPoints(currentPosition).length - 1) cursor++;
-    });
+        kontra.keys.bind('down', () => {
+            if (cursor < getAccessPoints(currentPosition).length - 1) cursor++;
+        });
 
-    kontra.keys.bind('up', () => {
-        if (cursor > 0) cursor--;
-    });
+        kontra.keys.bind('up', () => {
+            if (cursor > 0) cursor--;
+        });
 
-    kontra.keys.bind('enter', () => {
-        const available = getAccessPoints(currentPosition);
-        const selected = available[cursor];
+        kontra.keys.bind('enter', () => {
+            const available = getAccessPoints(currentPosition);
+            const selected = available[cursor];
 
-        debug(selected.cost);
+            if (selected.cost !== undefined && selected.cost > 0) {
+                const wishToPurchase = window.confirm(
+                    `Do you wish to pay ${selected.cost} to use this network?`
+                );
 
-        if (selected.cost !== undefined && selected.cost > 0) {
-            const wishToPurchase = window.confirm(
-                `Do you wish to pay ${selected.cost} to use this network?`
-            );
-
-            if (wishToPurchase) {
-                if (remainingMoney >= selected.cost) {
-                    remainingMoney -= selected.cost;
-                    selected.cost = 0;
+                if (wishToPurchase) {
+                    if (money.remaining >= selected.cost) {
+                        money.remaining -= selected.cost;
+                        selected.cost = 0;
+                    } else {
+                        alert('You don\'t have enough money to afford this network');
+                        return;
+                    }
                 } else {
-                    alert('You don\'t have enough money to afford this network');
                     return;
                 }
-            } else {
-                return;
             }
-        }
 
-        if (selected.password !== undefined) {
-            const attempt = prompt(`Enter a ${selected.encryption} password:`);
+            if (selected.password !== undefined) {
+                const attempt = prompt(`Enter a ${selected.encryption} password:`);
 
-            if (hash(attempt) !== selected.password) {
-                alert('You entered an incorrect password');
-                return;
+                if (hash(attempt) !== selected.password) {
+                    alert('You entered an incorrect password');
+                    return;
+                }
             }
-        }
 
-        currentAP = selected;
+            currentAP = selected;
 
-        hideNetworkList();
-    });
-}
+            hideNetworkList();
+        });
+    }
 
-function hideNetworkList() {
-    isNetworkListOpen = false;
-    kontra.keys.unbind(['down', 'up', 'enter']);
+    function hideNetworkList() {
+        isNetworkListOpen = false;
+        kontra.keys.unbind(['down', 'up', 'enter']);
 
-    bindMovementKeys();
-    kontra.keys.bind('p', togglePause);
-    kontra.keys.bind('h', toggleHelp);
-}
+        bindMovementKeys();
+        kontra.keys.bind('p', togglePause);
+        kontra.keys.bind('h', toggleHelp);
+    }
 
-function showHelp() {
-    isHelpOpen = true;
-    kontra.keys.unbind([...movementKeys, 'n', 'p']);
+    function showHelp() {
+        isHelpOpen = true;
+        kontra.keys.unbind([...movementKeys, 'n', 'p']);
 
-    debug('WiFiHunt');
-    debug('--------');
-    debug('');
-    debug('controls:');
-    debug('↑ / w — move forward');
-    debug('→ / d — turn right');
-    debug('← / a — turn left');
-    debug('h — show this help message');
-    debug('n — show available networks');
-    debug('p — pause');
-}
+        debug('WiFiHunt');
+        debug('--------');
+        debug('');
+        debug('controls:');
+        debug('↑ / w — move forward');
+        debug('→ / d — turn right');
+        debug('← / a — turn left');
+        debug('h — show this help message');
+        debug('n — show available networks');
+        debug('p — pause');
+    }
 
-function hideHelp() {
-    isHelpOpen = false;
-    bindMovementKeys();
+    function hideHelp() {
+        isHelpOpen = false;
+        bindMovementKeys();
 
-    debug('get rid of the help "dialog box"');
+        debug('get rid of the help "dialog box"');
 
-    bindMovementKeys();
-    kontra.keys.bind('n', toggleNetworkList);
-    kontra.keys.bind('p', togglePause);
-}
+        bindMovementKeys();
+        kontra.keys.bind('n', toggleNetworkList);
+        kontra.keys.bind('p', togglePause);
+    }
 
-function gameOver(wasSuccessful) {
-    debug(`game up. you ${wasSuccessful ? 'won' : 'lost'}.`);
-}
+    function gameOver(wasSuccessful) {
+        debug(`game up. you ${wasSuccessful ? 'won' : 'lost'}.`);
+    }
 
-// utility //
+    // utility //
 
-function bindMovementKeys() {
-    kontra.keys.bind(['up', 'w'], moveForward);
-    kontra.keys.bind(['left', 'a'], turnLeft);
-    kontra.keys.bind(['right', 'd'], turnRight);
-}
+    function bindMovementKeys() {
+        kontra.keys.bind(['up', 'w'], moveForward);
+        kontra.keys.bind(['left', 'a'], turnLeft);
+        kontra.keys.bind(['right', 'd'], turnRight);
+    }
 
-function getAccessPoints(point) {
-    return accessPoints.filter((accessPoint) => {
-        return accessPoint.isInRange(point);
-    });
-}
+    function getAccessPoints(point) {
+        return accessPoints.filter((accessPoint) => {
+            return accessPoint.isInRange(point);
+        });
+    }
 
-function drawDialogBox(dimensions, writeText, fontSize = 19) {
-    // fade window
-    kontra.context.fillStyle = 'hsla(0, 0%, 0%, 0.25)';
-    kontra.context.fillRect(
-        0, 0,
-        kontra.canvas.width, kontra.canvas.height
-    );
+    function drawDialogBox(dimensions, writeText) {
+        // fade window
+        kontra.context.fillStyle = 'hsla(0, 0%, 0%, 0.25)';
+        kontra.context.fillRect(
+            0, 0,
+            kontra.canvas.width, kontra.canvas.height
+        );
 
-    const position = {
-        x: (kontra.canvas.width - dimensions.width) / 2,
-        y: (kontra.canvas.height - dimensions.height) / 2
-    };
+        const position = {
+            x: (kontra.canvas.width - dimensions.width) / 2,
+            y: (kontra.canvas.height - dimensions.height) / 2
+        };
 
-    kontra.context.fillStyle = 'hsl(218, 9%, 17%)';
-    kontra.context.fillRect(
-        position.x, position.y,
-        dimensions.width, dimensions.height
-    );
+        kontra.context.fillStyle = 'hsl(218, 9%, 17%)';
+        kontra.context.fillRect(
+            position.x, position.y,
+            dimensions.width, dimensions.height
+        );
 
-    kontra.context.fillStyle = 'white';
-    kontra.context.font = `${fontSize}px monospace`;
-    writeText(position, dimensions);
-}
+        kontra.context.fillStyle = 'white';
+        kontra.context.font = '19px monospace';
+        writeText(position, dimensions);
+    }
+};
