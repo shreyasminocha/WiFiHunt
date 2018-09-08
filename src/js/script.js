@@ -9,6 +9,8 @@ function debug(stuff) {
 const fps = 50;
 const movementKeys = ['left', 'right', 'up', 'a', 'd', 'w'];
 
+// variables
+
 let currentAP = null;
 const currentPosition = new Point(0, 0);
 
@@ -332,7 +334,11 @@ window.onload = () => {
     }
 
     function turnLeft() {
-        angleOfRotation += 1;
+        angleOfRotation += 5;
+
+        // fix aOR when it is off by one
+        // due to frame-by-frame updating of aOR
+        if (angleOfRotation % 5 !== 0) angleOfRotation += 1;
 
         if (angleOfRotation >= 360) {
             angleOfRotation = 0;
@@ -340,7 +346,9 @@ window.onload = () => {
     }
 
     function turnRight() {
-        angleOfRotation -= 1;
+        angleOfRotation -= 5;
+
+        if (angleOfRotation % 5 !== 0) angleOfRotation += 1;
 
         if (angleOfRotation < 0) {
             angleOfRotation = 359;
