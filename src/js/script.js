@@ -16,7 +16,6 @@ let angleOfRotation = 90; // in degrees
 
 let isNetworkListOpen = false;
 let isPaused = false;
-let isHelpOpen = false;
 
 window.onload = () => {
     kontra.init();
@@ -96,7 +95,6 @@ window.onload = () => {
         bindMovementKeys();
         kontra.keys.bind('p', togglePause);
         kontra.keys.bind('n', toggleNetworkList);
-        kontra.keys.bind('h', toggleHelp);
 
         loop.start();
     }
@@ -344,11 +342,6 @@ window.onload = () => {
         else hideNetworkList();
     }
 
-    function toggleHelp() {
-        if (!isHelpOpen) showHelp();
-        else hideHelp();
-    }
-
     function pause() {
         isPaused = true;
         kontra.keys.unbind([...movementKeys, 'n', 'h']);
@@ -359,7 +352,6 @@ window.onload = () => {
 
         bindMovementKeys();
         kontra.keys.bind('n', toggleNetworkList);
-        kontra.keys.bind('h', toggleHelp);
     }
 
     function showNetworkList() {
@@ -418,34 +410,6 @@ window.onload = () => {
         kontra.keys.unbind(['down', 'up', 'enter']);
 
         bindMovementKeys();
-        kontra.keys.bind('p', togglePause);
-        kontra.keys.bind('h', toggleHelp);
-    }
-
-    function showHelp() {
-        isHelpOpen = true;
-        kontra.keys.unbind([...movementKeys, 'n', 'p']);
-
-        debug('WiFiHunt');
-        debug('--------');
-        debug('');
-        debug('controls:');
-        debug('↑ / w — move forward');
-        debug('→ / d — turn right');
-        debug('← / a — turn left');
-        debug('h — show this help message');
-        debug('n — show available networks');
-        debug('p — pause');
-    }
-
-    function hideHelp() {
-        isHelpOpen = false;
-        bindMovementKeys();
-
-        debug('get rid of the help "dialog box"');
-
-        bindMovementKeys();
-        kontra.keys.bind('n', toggleNetworkList);
         kontra.keys.bind('p', togglePause);
     }
 
