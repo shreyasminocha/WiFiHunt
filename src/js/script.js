@@ -33,12 +33,14 @@ window.onload = () => {
             }
         },
         render() {
+            road.render();
             player.render();
             battery.render();
             networkIndicator.render();
             money.render();
             remainingGoal.render();
             speedIndicator.render();
+            positionIndicator.render();
 
             // pause dialog box
             if (isPaused) {
@@ -297,6 +299,21 @@ window.onload = () => {
             kontra.context.fillText(
                 `↑ Speed: ${Math.ceil(currentAP.speedAt(currentPosition, 'upload') * 1024)} KiB/s`,
                 25, 270 + 30
+            );
+        }
+    });
+
+    const positionIndicator = kontra.sprite({
+        render() {
+            kontra.context.font = '16px monospace';
+            kontra.context.fillText(
+                `(${toFixed(currentPosition.x, 2)}, ${toFixed(currentPosition.y, 2)})`,
+                25, kontra.canvas.height - 20
+            );
+
+            kontra.context.fillText(
+                `${angleOfRotation}°`,
+                25, kontra.canvas.height - 45
             );
         }
     });
