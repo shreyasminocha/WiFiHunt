@@ -35,7 +35,6 @@ window.onload = () => {
             }
         },
         render() {
-            road.render();
             player.render();
             battery.render();
             networkIndicator.render();
@@ -70,7 +69,7 @@ window.onload = () => {
                     // `82 + ` makes up for the padding and heading
                     // `25` is the sum of font size and padding for each entry
                     height: 82 + (availableAPs.length * 25)
-                }, (position) => {
+                }, (position, dimensions) => {
                     kontra.context.fillText(
                         'Available Networks:',
                         position.x + 25, // `25` is the left padding
@@ -84,6 +83,28 @@ window.onload = () => {
                             position.x + 25, // `25` is the left padding
                             position.y + yCoordinate
                         );
+
+                        const rightSideX = position.x
+                            + dimensions.width
+                            - 25 // padding
+                            - 19; // font-size
+
+                        const isEncrypted = accessPoint.password !== undefined;
+                        const isPaid = accessPoint.cost > 0;
+
+                        if (isEncrypted) {
+                            kontra.context.fillText(
+                                '🔒',
+                                rightSideX, position.y + yCoordinate
+                            );
+                        }
+
+                        if (isPaid) {
+                            kontra.context.fillText(
+                                '💰',
+                                rightSideX, position.y + yCoordinate
+                            );
+                        }
 
                         yCoordinate += 25;
                     }
