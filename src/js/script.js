@@ -35,6 +35,7 @@ window.onload = () => {
             }
         },
         render() {
+            road.render();
             player.render();
             battery.render();
             networkIndicator.render();
@@ -338,6 +339,25 @@ window.onload = () => {
                 `${angleOfRotation}°`,
                 25, kontra.canvas.height - 45
             );
+        }
+    });
+
+    const road = kontra.sprite({
+        render() {
+            kontra.context.fillStyle = 'hsl(220, 2%, 35%)';
+            kontra.context.fillRect(
+                kontra.canvas.width / 3, 0,
+                kontra.canvas.width / 3, kontra.canvas.height
+            );
+
+            // zebra crossing
+            kontra.context.fillStyle = 'white';
+            for (let y = 100; y <= 500; y += 200) {
+                kontra.context.fillRect(
+                    (kontra.canvas.width - 25) / 2, y,
+                    25, 100
+                );
+            }
         }
     });
 
