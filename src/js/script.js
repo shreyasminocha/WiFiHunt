@@ -343,11 +343,12 @@ window.onload = () => {
     });
 
     const road = kontra.sprite({
+        width: kontra.canvas.width / 3,
         render() {
             kontra.context.fillStyle = 'hsl(220, 2%, 35%)';
             kontra.context.fillRect(
-                kontra.canvas.width / 3, 0,
-                kontra.canvas.width / 3, kontra.canvas.height
+                road.width, 0,
+                road.width, kontra.canvas.height
             );
 
             // zebra crossing
@@ -356,6 +357,14 @@ window.onload = () => {
                 kontra.context.fillRect(
                     (kontra.canvas.width - 25) / 2, y,
                     25, 100
+                );
+            }
+
+            kontra.context.font = '200px monospace';
+            for (let y = 100; y <= 700; y += 150) {
+                kontra.context.fillText(
+                    '🌳',
+                    road.width + 350, y
                 );
             }
         }
