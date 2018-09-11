@@ -35,7 +35,9 @@ window.onload = () => {
             }
         },
         render() {
+            kontra.context.save();
             road.render();
+
             player.render();
             battery.render();
             networkIndicator.render();
@@ -365,8 +367,17 @@ window.onload = () => {
                 );
             }
 
+            // trees
+
             kontra.context.font = '200px monospace';
-            for (let y = 100; y <= 700; y += 150) {
+            for (let y = ((currentPosition.y % 200) - 200) * 10; y <= 700; y += 150) {
+                kontra.context.fillText(
+                    '🌳',
+                    road.width - 150, y + 25
+                );
+            }
+
+            for (let y = ((currentPosition.y % 200) - 200) * 10; y <= 700; y += 175) {
                 kontra.context.fillText(
                     '🌳',
                     road.width + 350, y
