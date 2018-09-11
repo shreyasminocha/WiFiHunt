@@ -353,7 +353,12 @@ window.onload = () => {
 
             // zebra crossing
             kontra.context.fillStyle = 'white';
-            for (let y = 100; y <= 500; y += 200) {
+
+            // `% 200` allows for the wrap-around
+            // `- 200` brings the initial zebra crossing a bit lower.
+            // stuff breaks when i remove it though so it must be doing a lot more ¯\_(ツ)_/¯
+            // `* 10` makes the zebra crossing move ten times more for each key press
+            for (let y = ((currentPosition.y % 200) - 200) * 10; y <= 700; y += 200) {
                 kontra.context.fillRect(
                     (kontra.canvas.width - 25) / 2, y,
                     25, 100
