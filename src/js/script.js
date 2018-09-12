@@ -1,9 +1,3 @@
-const debugOn = true;
-
-function debug(stuff) {
-    if (debugOn) console.log(stuff);
-}
-
 // constants //
 
 const fps = 50;
@@ -352,10 +346,18 @@ window.onload = () => {
     const road = kontra.sprite({
         width: kontra.canvas.width / 3,
         render() {
+            kontra.context.save();
+
+            kontra.context.translate(kontra.canvas.width / 2, kontra.canvas.height - 80);
+            kontra.context.rotate(toRadians(-(90 - angleOfRotation)));
+            kontra.context.translate(-(kontra.canvas.width / 2), -(kontra.canvas.height - 80));
+
+            const sine = Math.abs(Math.sin(toRadians(angleOfRotation) + .1));
+
             kontra.context.fillStyle = 'hsl(220, 2%, 35%)';
             kontra.context.fillRect(
-                road.width, 0,
-                road.width, kontra.canvas.height
+                road.width, -300,
+                road.width, (kontra.canvas.height / sine) + 300 + 100
             );
 
             // zebra crossing
@@ -388,6 +390,8 @@ window.onload = () => {
                     road.width + 350, y
                 );
             }
+
+            kontra.context.restore();
         }
     });
 
@@ -508,7 +512,7 @@ window.onload = () => {
     }
 
     function gameOver(wasSuccessful) {
-        debug(`game up. you ${wasSuccessful ? 'won' : 'lost'}.`);
+        console.log(`game up. you ${wasSuccessful ? 'won' : 'lost'}.`);
     }
 
     // utility //
