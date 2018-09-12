@@ -19,6 +19,8 @@ let angleOfRotation = 90; // in degrees
 let isNetworkListOpen = false;
 let isPaused = false;
 
+let cursor = 0;
+
 window.onload = () => {
     kontra.init();
 
@@ -80,7 +82,10 @@ window.onload = () => {
                     );
 
                     let yCoordinate = 75;
-                    for (const accessPoint of availableAPs) {
+                    for (let i = 0; i < availableAPs.length; i++) {
+                        const accessPoint = availableAPs[i];
+
+                        kontra.context.fillStyle = cursor === i ? 'hsl(0, 0%, 75%)' : 'white';
                         kontra.context.fillText(
                             accessPoint.ssid,
                             position.x + 25, // `25` is the left padding
@@ -446,9 +451,8 @@ window.onload = () => {
 
     function showNetworkList() {
         isNetworkListOpen = true;
+        cursor = 0;
         kontra.keys.unbind([...movementKeys, 'p', 'h']);
-
-        let cursor = 0;
 
         kontra.keys.bind('down', () => {
             if (cursor < getAccessPoints(currentPosition).length - 1) cursor++;
