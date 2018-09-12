@@ -1,7 +1,7 @@
 // constants //
 
 const fps = 50;
-const movementKeys = ['left', 'right', 'up', 'a', 'd', 'w'];
+const movementKeys = ['left', 'right', 'up', 'down', 'a', 'd', 'w', 's'];
 
 // variables
 
@@ -17,6 +17,19 @@ let cursor = 0;
 
 window.onload = () => {
     kontra.init();
+
+    function game() {
+        kontra.canvas.width = window.innerWidth - 15;
+        kontra.canvas.height = window.innerHeight;
+
+        bindMovementKeys();
+        kontra.keys.bind('p', togglePause);
+        kontra.keys.bind('n', toggleNetworkList);
+
+        loop.start();
+    }
+
+    game();
 
     const loop = kontra.gameLoop({
         fps,
@@ -114,19 +127,6 @@ window.onload = () => {
             }
         }
     });
-
-    function game() {
-        kontra.canvas.width = window.innerWidth - 15;
-        kontra.canvas.height = window.innerHeight;
-
-        bindMovementKeys();
-        kontra.keys.bind('p', togglePause);
-        kontra.keys.bind('n', toggleNetworkList);
-
-        loop.start();
-    }
-
-    game();
 
     const player = kontra.sprite({
         render() {
@@ -352,7 +352,7 @@ window.onload = () => {
             kontra.context.rotate(toRadians(-(90 - angleOfRotation)));
             kontra.context.translate(-(kontra.canvas.width / 2), -(kontra.canvas.height - 80));
 
-            const sine = Math.abs(Math.sin(toRadians(angleOfRotation) + .1));
+            const sine = Math.abs(Math.sin(toRadians(angleOfRotation) + 0.1));
 
             kontra.context.fillStyle = 'hsl(220, 2%, 35%)';
             kontra.context.fillRect(
