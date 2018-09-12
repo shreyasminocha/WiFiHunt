@@ -389,35 +389,34 @@ window.onload = () => {
     // navigation //
 
     function moveForward() {
-        debug(toRadians(angleOfRotation));
-
         const [xComponent, yComponent] = polarToCartesian(angleOfRotation, 1);
 
         currentPosition.x += xComponent;
         currentPosition.y += yComponent;
+    }
 
-        debug(`(${currentPosition.x}, ${currentPosition.y})`);
+    function moveBackward() {
+        const [xComponent, yComponent] = polarToCartesian(angleOfRotation, 1);
+
+        currentPosition.x -= xComponent;
+        currentPosition.y -= yComponent;
     }
 
     function turnLeft() {
-        angleOfRotation += 5;
-
         // fix aOR when it is off by one
         // due to frame-by-frame updating of aOR
         if (angleOfRotation % 5 !== 0) angleOfRotation += 1;
 
-        if (angleOfRotation >= 360) {
-            angleOfRotation = 0;
+        if (angleOfRotation < 180) {
+            angleOfRotation += 5;
         }
     }
 
     function turnRight() {
-        angleOfRotation -= 5;
-
         if (angleOfRotation % 5 !== 0) angleOfRotation += 1;
 
-        if (angleOfRotation < 0) {
-            angleOfRotation = 359;
+        if (angleOfRotation > 0) {
+            angleOfRotation -= 5;
         }
     }
 
@@ -512,6 +511,7 @@ window.onload = () => {
 
     function bindMovementKeys() {
         kontra.keys.bind(['up', 'w'], moveForward);
+        kontra.keys.bind(['down', 's'], moveBackward);
         kontra.keys.bind(['left', 'a'], turnLeft);
         kontra.keys.bind(['right', 'd'], turnRight);
     }

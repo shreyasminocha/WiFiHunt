@@ -13,6 +13,7 @@ Key       | Action
 `←` / `a` | turn the player left
 `→` / `d` | turn the player right
 `↑` / `w` | move forward
+`↓` / `s` | move backward
 `n`       | list available networks
 `p`       | pause the game
 
