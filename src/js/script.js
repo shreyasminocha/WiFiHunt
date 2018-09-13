@@ -374,24 +374,29 @@ window.onload = () => {
                 );
             }
 
+            kontra.context.restore();
+
             // trees
 
             kontra.context.font = '200px monospace';
-            for (let y = ((currentPosition.y % 200) - 200) * 10; y <= 700; y += 150) {
+
+            let x1 = road.width - 190;
+            let x2 = road.width + road.width - 100;
+
+            for (let y = 0; y <= kontra.canvas.height + 100; y += 150) {
                 kontra.context.fillText(
                     '🌳',
-                    road.width - 150, y + 25
+                    x1 - (100 * Math.cos(angleOfRotation)), y + 50
                 );
-            }
 
-            for (let y = ((currentPosition.y % 200) - 200) * 10; y <= 700; y += 175) {
                 kontra.context.fillText(
                     '🌳',
-                    road.width + 350, y
+                    x2 - (100 * Math.cos(angleOfRotation)), y
                 );
-            }
 
-            kontra.context.restore();
+                x1 -= 150 * Math.tan(toRadians(90 + angleOfRotation));
+                x2 -= 175 * Math.tan(toRadians(90 + angleOfRotation));
+            }
         }
     });
 
