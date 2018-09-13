@@ -18,19 +18,6 @@ let cursor = 0;
 window.onload = () => {
     kontra.init();
 
-    function game() {
-        kontra.canvas.width = window.innerWidth - 15;
-        kontra.canvas.height = window.innerHeight;
-
-        bindMovementKeys();
-        kontra.keys.bind('p', togglePause);
-        kontra.keys.bind('n', toggleNetworkList);
-
-        loop.start();
-    }
-
-    game();
-
     const loop = kontra.gameLoop({
         fps,
         update() {
@@ -127,6 +114,19 @@ window.onload = () => {
             }
         }
     });
+
+    function game() {
+        kontra.canvas.width = window.innerWidth - 15;
+        kontra.canvas.height = window.innerHeight;
+
+        bindMovementKeys();
+        kontra.keys.bind('p', togglePause);
+        kontra.keys.bind('n', toggleNetworkList);
+
+        loop.start();
+    }
+
+    game();
 
     const player = kontra.sprite({
         render() {
