@@ -2,11 +2,29 @@
 
 > Go around the city looking for WiFi hotspots to complete the download and upload goals.
 
-My entry for [JS13kGames 2018](//2018.js13kgames.com).
+[My entry](https://js13kgames.com/entries/wifihunt) for [JS13kGames 2018](//2018.js13kgames.com).
 
 Theme: **offline**
 
-## Controls
+![Screenshot](/media/screenshot.jpeg)
+
+<p align="center">
+    <a href=https://github.com/shreyasminocha/WiFiHunt/tree/submission>Repo tree as of submission</a> · <a href=https://github.com/shreyasminocha/WiFiHunt/releases/tag/submission>ZIP as of submission</a>
+</p>
+
+## Note
+
+For several reasons (including exams and lack of time management), I wasn’t able to submit a polished game.
+
+This is [very much a prototype](https://github.com/shreyasminocha/WiFiHunt/issues). I never got to fully test the game so it might be unbeatable, it might be too easy. I don't even know. I made way too many compromises to meet the deadline. Not proud of the result. But then this was my first time making a game or even working with HTML5 Canvas. I definitely learn a hell lot.
+
+I'll probably work on fixing bugs and improving the game even though the competition is already over.
+
+I also plan on writing a blog post about my journey this year and lessons learnt. 
+
+## Playing
+
+### Controls
 
 Key       | Action
 ----------|------------------------
