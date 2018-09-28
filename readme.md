@@ -14,13 +14,13 @@ Theme: **offline**
 
 ## Note
 
-For several reasons (including exams and lack of time management), I wasn’t able to submit a polished game.
+For several reasons (including exams and lack of time management), my game didn't come out very polished.
 
 This is [very much a prototype](https://github.com/shreyasminocha/WiFiHunt/issues). I never got to fully test the game so it might be unbeatable, it might be too easy. I don't even know. I made way too many compromises to meet the deadline. Not proud of the result. But then this was my first time making a game or even working with HTML5 Canvas. I definitely learn a hell lot.
 
 I'll probably work on fixing bugs and improving the game even though the competition is already over.
 
-I also plan on writing a blog post about my journey this year and lessons learnt. 
+I've written [a blog post](https://shreyasminocha.me/blog/js13k-2018-postmortem) about my journey this year and the lessons I learnt. 
 
 ## Playing
 
